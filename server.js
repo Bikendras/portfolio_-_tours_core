@@ -5,11 +5,11 @@ app.use(cors())
 var multer= require("multer");
 var upload= multer();
 const nodemailer=require("nodemailer");
-
+const bcrypt = require("bcrypt");
 
 var {MongoClient}=require("mongodb");
-async function dbconnect(collection){
-    var url= 'mongodb://127.0.0.1:27017';
+async function dbconnect(collection){ 
+    var url= 'mongodb://127.0.0.1:27017'; 
     var client=new MongoClient(url);
     var connect= client.db("Projects");
     if(collection=='portFolio'){
@@ -27,6 +27,79 @@ app.get("/", function (req, res) {
     var name = "bikendra_singh";
     res.send("hello all");
 });
+
+// Navbar Registration
+app.post("/registerNav",upload.single(),async function(req,res){
+    const {name,email,password,confirmPassword,mobile} = req.body;
+    if(name&&email&&password&&confirmPassword&&mobile){
+        var user = await dbconnect("navbar");
+        const hashpassword = await bcrypt.hash(password,10);
+        const finduser = await user.findOne({email: email});
+        if(finduser){
+            res.send({message: "user Already registered", status: 1});
+        }else{
+            const insertuser = await user.insertOne({
+                name: name,
+                email: email,
+                password: hashpassword,
+                confirmPassword: confirmPassword,
+                mobile: mobile,
+            })
+            if(insertuser){
+                res.send({message: "Registration Successfully", status: 1})
+            }else{
+                res.send({message: "Registration Failure", status: 0});
+            }
+        }
+    }else{
+        res.send({message: "Please enter All fields", status: 0});
+    }
+})
+
+
+// Navbar Login...
+app.post('/login',upload.single(),async function(req,res){
+    const {email,password} = req.body;
+    if (email && password){
+        if(email){
+            const user = await dbconnect("navb");
+            const findemail = await user.findOne({email: email});
+            if(findemail){
+                if(findemail.email == email){
+                    bcrypt.compare(password,findemail.password,async function(error,result){
+                        if(result){
+                            const transport= nodemailer.createTransport({
+                                host: "smtp.gmail.com",
+                                port: 465,
+                                auth:{
+                                    user: "myselfbikendra7848@gmail.com",
+                                    pass: "6677767675768"
+                                }
+                            });
+                            const info = await transport.sendMail({
+                                from: "myselfbikendra7848@gmail.com",
+                                to: "bikendra7848@gmail.com",
+                                subject: "Login Confirmation",
+                                text: "Welcome to product page",
+                                html: "Welcome to product page send user infomation",
+                            })
+                            res.send({message: "Login successful", status:1, data: "findemail"});
+                        }
+                    })
+                }else{
+                    res.send({message: "Login failed", status: 0});
+                }
+            }else{
+                res.send({message: "email not found", status: 0});
+            }
+        }else{
+            res.send({message: "Please enter email", status: 0});
+        }
+    }else{
+        res.send({message: "Please enter your email && password", status: 0});
+    }
+})
+
 
 // portFolio..
 app.post('/register',upload.single(),async function(req,res){
