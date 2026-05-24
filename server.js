@@ -17,22 +17,28 @@ const upload = multer();
 console.log("MONGO_URL => ", process.env.MONGO_URL);
 
 // MongoDB Connection
+const { MongoClient } = require("mongodb");
+
 const client = new MongoClient(process.env.MONGO_URL);
 
+let database;
+
 async function connectDB() {
-  try {
-    await client.connect();
-    console.log("MongoDB Connected Successfully");
-  } catch (error) {
-    console.log("MongoDB Connection Error:", error);
-  }
+    try {
+        await client.connect();
+        console.log("MongoDB Connected Successfully");
+
+        database = client.db("portfolio");
+
+    } catch (error) {
+        console.log("MongoDB Connection Error:", error);
+    }
 }
 
 connectDB();
 
 function dbconnect(collectionName) {
-  const database = client.db("portfolio");
-  return database.collection(collectionName);
+    return database.collection(collectionName);
 }
 
 // Home Route
