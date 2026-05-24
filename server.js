@@ -6,20 +6,14 @@ var multer= require("multer");
 var upload= multer();
 const nodemailer=require("nodemailer");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
-var {MongoClient}=require("mongodb");
-async function dbconnect(collection){ 
-    var url= 'mongodb://127.0.0.1:27017'; 
-    var client=new MongoClient(url);
-    var connect= client.db("Projects");
-    if(collection=='portFolio'){
-        var collection= connect.collection("portFolio");
-        return collection;
-    }
-    else{
-        var collection= connect.collection("tours");
-        return collection;
-    }
+var { MongoClient } = require("mongodb");
+const client = new MongoClient(process.env.MONGO_URL);
+async function dbconnect(collectionName) {
+    await client.connect();
+    const database = client.db("portfolio");
+    return database.collection(collectionName);
 }
 
 app.get("/", function (req, res) {
@@ -185,8 +179,10 @@ app.post('/registers',upload.single(),async function(req,res){
     }
 })
 
-app.listen(8000, function () {
-    console.log("server listening on http://localhost:8000/");
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, function () {
+    console.log(`server listening on port ${PORT}`);
 });
 
 
