@@ -17,8 +17,6 @@ const upload = multer();
 console.log("MONGO_URL => ", process.env.MONGO_URL);
 
 // MongoDB Connection
-const { MongoClient } = require("mongodb");
-
 const client = new MongoClient(process.env.MONGO_URL);
 
 let database;
