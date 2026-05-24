@@ -7,13 +7,22 @@ var upload= multer();
 const nodemailer=require("nodemailer");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
+console.log("---MONGO_URL--------",process.env.MONGO_URL);
 
-var { MongoClient } = require("mongodb");
+const { MongoClient } = require("mongodb");
 const client = new MongoClient(process.env.MONGO_URL);
+
 async function dbconnect(collectionName) {
-    await client.connect();
-    const database = client.db("portfolio");
-    return database.collection(collectionName);
+    try {
+        await client.connect();
+        console.log("MongoDB Connected");
+
+        const database = client.db("portfolio");
+        return database.collection(collectionName);
+
+    } catch (error) {
+        console.log("MongoDB Error:", error);
+    }
 }
 
 app.get("/", function (req, res) {
