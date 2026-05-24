@@ -66,13 +66,13 @@ app.post('/login',upload.single(),async function(req,res){
                                 host: "smtp.gmail.com",
                                 port: 465,
                                 auth:{
-                                    user: "myselfbikendra7848@gmail.com",
-                                    pass: "6677767675768"
+                                    user: process.env.EMAIL,
+                                    pass: process.env.EMAIL_PASS
                                 }
                             });
                             const info = await transport.sendMail({
-                                from: "myselfbikendra7848@gmail.com",
-                                to: "bikendra7848@gmail.com",
+                                from: process.env.EMAIL,
+                                to: email,
                                 subject: "Login Confirmation",
                                 text: "Welcome to product page",
                                 html: "Welcome to product page send user infomation",
@@ -115,14 +115,13 @@ app.post('/register',upload.single(),async function(req,res){
                     host: "smtp.gmail.com", // provider or host name
                     port: 465,
                     auth: {
-                      // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-                      user: "myselfbikendra@gmail.com", // sender email address
-                      pass: "voxy cdyv aatl hkjb" // original gmail ke 2 way verification password hai..
+                        user: process.env.EMAIL,
+                        pass: process.env.EMAIL_PASS
                     }
                   });
                   const info = await transport.sendMail({
-                    from: "myselfbikendra@gmail.com", // sender email address
-                    to: "bikendra7848@gmail.com", // list of receivers Reac
+                    from: process.env.EMAIL,
+                    to: email,
                     subject: "confirmation ✔", // Subject line
                     text: `Congratulation dear user, myselfbikendra@gmail.com your Registraction successfully`, // plain text body
                     html: `<b>Congratulation dear user, "myselfbikendra@gmail.com" your Registraction successfully </b>`, // html body send to customer message.
@@ -157,14 +156,13 @@ app.post('/registers',upload.single(),async function(req,res){
                     host: "smtp.gmail.com", // provider or host name
                     port: 465,
                     auth: {
-                      // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-                      user: "myselfbikendra@gmail.com", // sender email address
-                      pass: "voxy cdyv aatl hkjb" // original gmail ke 2 way verification password hai..
+                        user: process.env.EMAIL,
+                        pass: process.env.EMAIL_PASS
                     }
                   });
                   const info = await transport.sendMail({
-                    from: "myselfbikendra@gmail.com", // sender email address
-                    to: "bikendra7848@gmail.com", // list of receivers Reac
+                    from: process.env.EMAIL,
+                    to: email,
                     subject: "Tour booked confirmation ✔", // Subject line
                     text: `Congratulation dear user, myselfbikendra@gmail.com your Tour booked successfully`, // plain text body
                     html: `<b>Congratulation dear user, "myselfbikendra@gmail.com" your Tour booked successfully </b>`, // html body send to customer message.
